@@ -20,7 +20,6 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-# --- 辅助函数 ---
 msg() {
     printf "${GREEN}==>${NC} %s\n" "$1"
 }
@@ -34,7 +33,6 @@ err() {
     exit 1
 }
 
-# --- 主要逻辑 ---
 main() {
     msg "开始安装 tellme..."
 
@@ -48,8 +46,15 @@ main() {
 
     # 2. 创建目录
     msg "创建安装目录..."
+    INSTALL_DIR="$HOME/.local/bin"
+    CONFIG_DIR="$HOME/.config/tellme" 
     mkdir -p "$INSTALL_DIR"
     mkdir -p "$CONFIG_DIR"
+
+    if [ ! -f "$CONFIG_DIR/status" ]; then
+        msg "初始化状态为 disabled..."
+        echo "disabled" > "$CONFIG_DIR/status"
+    fi
 
     # 3. 获取 tellme 二进制文件
     if ! download_binary; then
