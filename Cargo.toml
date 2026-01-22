@@ -1,0 +1,18 @@
+[package]
+name = "tellme"
+version = "0.1.0"
+edition = "2024"
+description = "Terminal black box - capture and preserve terminal output"
+authors = ["Tellme Contributors"]
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+anyhow = "1.0"
+chrono = "0.4"
+colored = "3.1.1"
+strip-ansi-escapes = "0.2.1"
+
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+nix = { version = "0.30", features = ["signal", "term", "poll"] }
