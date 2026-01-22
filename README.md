@@ -40,6 +40,26 @@ curl -fsSL https://raw.githubusercontent.com/WindLX/tellme/main/install.sh | sh
 
 ## 💡 使用方法
 
+`tellme` 默认是关闭的，因为它会使得终端的命令的颜色输出被移除。如果你想启用它，可以在终端中运行：
+
+```zsh
+tellme on
+```
+
+你可以随时通过以下命令检查当前状态：
+
+```zsh
+tellme status
+```
+
+使用下面的命令可以关闭 `tellme`：
+
+```zsh
+tellme off
+```
+
+启用后，每当你运行一个命令后，只需输入 `tellme`，它就会将该命令的完整输出保存到一个日志文件中。默认情况下，日志文件会保存在当前目录下，文件名格式为 `tellme_YYYY-MM-DD_HH-MM-SS.log`。
+
 `tellme` 的使用非常简单直观。
 
 **场景一：捕获编译错误**
