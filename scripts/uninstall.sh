@@ -1,10 +1,15 @@
 #!/bin/sh
 
+# tellme - Uninstallation Script
+#
+# 卸载 tellme 及其所有配置文件。
+
 set -e
 
 # --- 配置 ---
-INSTALL_DIR="$HOME/.local/bin"
-CONFIG_DIR="$HOME/.config/tellme"
+TELLME_INSTALL_DIR="${TELLME_INSTALL_DIR:-$HOME/.local/bin}"
+TELLME_CONFIG_DIR="${TELLME_CONFIG_DIR:-$HOME/.config/tellme}"
+
 ZSHRC_FILE="$HOME/.zshrc"
 
 # --- 颜色定义 ---
@@ -32,18 +37,18 @@ if [ -f "$ZSHRC_FILE" ]; then
 fi
 
 # 2. 移除二进制文件
-if [ -f "$INSTALL_DIR/tellme" ]; then
-    msg "正在移除二进制文件: $INSTALL_DIR/tellme"
-    rm -f "$INSTALL_DIR/tellme"
+if [ -f "$TELLME_INSTALL_DIR/tellme" ]; then
+    msg "正在移除二进制文件: $TELLME_INSTALL_DIR/tellme"
+    rm -f "$TELLME_INSTALL_DIR/tellme"
 fi
 
 # 3. 移除配置文件和钩子
-if [ -d "$CONFIG_DIR" ]; then
-    msg "正在移除配置文件目录: $CONFIG_DIR"
-    rm -rf "$CONFIG_DIR"
+if [ -d "$TELLME_CONFIG_DIR" ]; then
+    msg "正在移除配置文件目录: $TELLME_CONFIG_DIR"
+    rm -rf "$TELLME_CONFIG_DIR"
 fi
 
-# 4. 清理临时文件 (可选但推荐)
+# 4. 清理临时文件
 msg "正在清理临时文件..."
 rm -f ${TMPDIR:-/tmp}/.tellme_*
 

@@ -11,6 +11,7 @@
 - **一键捕获**: 无需预先设置，命令运行后即可捕获。
 - **完整保存**: 不再受终端回滚行数限制，捕获完整的 stdout 和 stderr。
 - **自动清理**: 自动去除 ANSI 颜色代码，生成干净、可读的日志文件。
+- **剪贴板支持**: 可选将输出直接复制到剪贴板，方便分享。
 - **时间戳命名**: 默认以时间戳命名日志文件，方便归档和查找。
 - **高性能**: 核心逻辑由 Rust 编写，处理大型日志文件速度极快。
 - **轻量级集成**: 通过简单的 Zsh 钩子与你的 Shell 无缝集成。
@@ -27,7 +28,7 @@
 只需在你的终端中运行以下命令：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/WindLX/tellme/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/WindLX/tellme/main/scripts/install.sh | sh
 ```
 
 安装脚本会自动完成以下工作：
@@ -98,14 +99,60 @@ $ tellme --raw -o colored_output.txt
 ✔ Output saved to colored_output.txt
 ```
 
+**场景四：复制到剪贴板**
+
+使用 `-c` 或 `--clipboard` 参数将输出内容直接复制到系统剪贴板。
+
+```zsh
+$ tellme -c
+✔ Output copied to clipboard.
+```
+
+**场景五：配置忽略名单**
+
+`tellme` 提供了一个配置系统来管理“忽略名单”。这些命令在运行时不会被 `tellme` 捕获（例如 `cd`、`vim` 等交互式命令）。
+
+```zsh
+# 列出当前的忽略名单
+$ tellme config --list
+
+# 添加一个新的忽略命令
+$ tellme config --add secret_command
+
+# 从忽略名单中移除
+$ tellme config --remove vim
+
+# 重置为默认配置
+$ tellme config --reset
+```
+
 ## 🗑️ 卸载
 
 我们提供了一个干净的卸载脚本。
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/WindLX/tellme/main/uninstall.sh | sh
+curl -fsSL https://raw.githubusercontent.com/WindLX/tellme/main/scripts/uninstall.sh | sh
 ```
 该脚本会移除二进制文件、配置文件，并清理你的 `.zshrc`。
+
+
+## 💻 本地开发
+
+本项目依赖 Zsh 环境，为了方便开发和测试，我们提供了一个本机开发的脚本。
+
+```zsh
+./scripts/install-dev.sh
+```
+
+这会直接从本机的代码仓库编译程序并安装，并进入一个沙箱环境来测试程序。
+
+### 运行测试
+
+本项目包含完整的单元测试和集成测试。我们在 `tests/` 目录下模拟了真实的 CLI 交互场景。在提交代码前，请确保通过所有测试：
+
+```bash
+cargo test
+```
 
 ## 🤝 贡献
 

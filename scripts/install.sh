@@ -8,10 +8,11 @@
 set -e # 遇到错误立即退出
 
 # --- 配置 ---
+TELLME_INSTALL_DIR="${TELLME_INSTALL_DIR:-$HOME/.local/bin}"
+TELLME_CONFIG_DIR="${TELLME_CONFIG_DIR:-$HOME/.config/tellme}"
+
 REPO="WindLX/tellme" 
-INSTALL_DIR="$HOME/.local/bin"
-CONFIG_DIR="$HOME/.config/tellme"
-ZSH_HOOK_FILE="$CONFIG_DIR/tellme.zsh"
+ZSH_HOOK_FILE="$TELLME_CONFIG_DIR/tellme.zsh"
 ZSHRC_FILE="$HOME/.zshrc"
 
 # --- 颜色定义 ---
@@ -46,15 +47,7 @@ main() {
 
     # 2. 创建目录
     msg "创建安装目录..."
-    INSTALL_DIR="$HOME/.local/bin"
-    CONFIG_DIR="$HOME/.config/tellme" 
-    mkdir -p "$INSTALL_DIR"
-    mkdir -p "$CONFIG_DIR"
-
-    if [ ! -f "$CONFIG_DIR/status" ]; then
-        msg "初始化状态为 disabled..."
-        echo "disabled" > "$CONFIG_DIR/status"
-    fi
+    mkdir -p "$TELLME_INSTALL_DIR"
 
     # 3. 获取 tellme 二进制文件
     if ! download_binary; then
@@ -66,7 +59,7 @@ main() {
 
     # 4. 下载 Zsh 钩子脚本
     msg "下载 Zsh 钩子脚本..."
-    curl -fsSL "https://raw.githubusercontent.com/$REPO/main/tellme.zsh" -o "$ZSH_HOOK_FILE" || err "下载 Zsh 钩子脚本失败。"
+    curl -fsSL "https://raw.githubusercontent.com/$REPO/main/zsh/tellme.zsh" -o "$ZSH_HOOK_FILE" || err "下载 Zsh 钩子脚本失败。"
     
     # 5. 配置 .zshrc
     msg "配置 .zshrc..."
@@ -80,10 +73,9 @@ main() {
     fi
     
     # 6. 检查 PATH
-    case ":$PATH:" in
-        *":$INSTALL_DIR:"*) ;;
-        *) warn "$INSTALL_DIR 不在你的 PATH 环境变量中。请手动添加。" ;;
-    esac
+    if ! echo "$PATH" | grep -q "$TELLME_INSTALL_DIR"; then
+        warn "$TELLME_INSTALL_DIR 不在你的 PATH 环境变量中。请手动添加。"
+    fi
 
     msg "tellme 安装成功！🎉"
 }
@@ -112,17 +104,17 @@ download_binary() {
     msg "最新版本为: $tag"
 
     # 构建下载链接
-    download_url="https://github.com/$REPO/releases/download/$tag/tellme-${arch}-${os}.tar.gz"
-    
+    download_url="https://github.com/$REPO/releases/download/$tag/tellme-${os}-${arch}"
+
     msg "下载链接: $download_url"
-    
-    # 下载并解压
-    if curl -L --fail "$download_url" | tar -xz -C "$INSTALL_DIR" tellme; then
-        chmod +x "$INSTALL_DIR/tellme"
+
+    # 直接下载二进制文件
+    if curl -L --fail -o "$TELLME_INSTALL_DIR/tellme" "$download_url"; then
+        chmod +x "$TELLME_INSTALL_DIR/tellme"
         msg "二进制文件下载并安装成功。"
         return 0
     else
-        warn "下载或解压失败。"
+        warn "下载失败。"
         return 1
     fi
 }
@@ -142,8 +134,8 @@ compile_locally() {
     (cd "$tmp_dir" && cargo build --release) || return 1
     
     # 复制二进制文件
-    cp "$tmp_dir/target/release/tellme" "$INSTALL_DIR/"
-    chmod +x "$INSTALL_DIR/tellme"
+    cp "$tmp_dir/target/release/tellme" "$TELLME_INSTALL_DIR/"
+    chmod +x "$TELLME_INSTALL_DIR/tellme"
     
     # 清理
     rm -rf "$tmp_dir"
