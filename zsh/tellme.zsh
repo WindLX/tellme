@@ -5,13 +5,13 @@ _tellme_preexec() {
     local cmd="$1"
 
     # Ask Rust if this command should be captured
-    local should_prepare=$(tellme internal --should-prepare "$cmd" 2>/dev/null)
+    local should_prepare=$(tellme internal --should-prepare "$cmd")
     if [[ "$should_prepare" != "true" ]]; then
         return
     fi
 
     # Ask Rust to prepare session and get log path
-    local log_path=$(tellme internal --prepare "$cmd" 2>/dev/null)
+    local log_path=$(tellme internal --prepare "$cmd")
 
     # Save original stdout/stderr to file descriptors 3 and 4
     exec 3>&1 4>&2
@@ -35,7 +35,7 @@ _tellme_precmd() {
 
 # Cleanup on shell exit
 _tellme_cleanup() {
-    tellme internal --cleanup 2>/dev/null
+    tellme internal --cleanup
 }
 
 autoload -Uz add-zsh-hook
@@ -51,25 +51,7 @@ warn() {
 }
 
 # Main tellme function - wrapper for the Rust binary
-tellme() {
-    TELLME_DEV_MODE="${TELLME_DEV_MODE:-0}"
-    if [[ $TELLME_DEV_MODE -eq 0 ]]; then
-        # Prevent direct calls to internal commands
-        local is_internal=0
-        for arg in "$@"; do
-            if [[ "$arg" == "internal" ]]; then
-                is_internal=1
-                break
-            fi
-        done
-
-        if [[ $is_internal -eq 1 ]]; then
-            warn "'internal' commands are reserved for system use." >&2
-            return 1
-        fi
-
-    fi
-    
+tellme() {    
     TELLME_SHELL_PID=$$ \
     command tellme "$@"
 }

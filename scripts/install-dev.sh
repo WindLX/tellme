@@ -66,7 +66,6 @@ fi
 export PATH="$PROJECT_ROOT/target/debug:\$PATH"
 export TELLME_CONFIG_DIR="$TELLME_CONFIG_DIR"
 export TELLME_TEMP_DIR="$TELLME_TEMP_DIR"
-export TELLME_DEV_MODE=1
 
 # 3. 加载插件
 source "$TELLME_ZSH_SRC"
