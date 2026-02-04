@@ -48,6 +48,7 @@ main() {
     # 2. 创建目录
     msg "创建安装目录..."
     mkdir -p "$TELLME_INSTALL_DIR"
+    mkdir -p "$TELLME_CONFIG_DIR"
 
     # 3. 获取 tellme 二进制文件
     if ! download_binary; then
