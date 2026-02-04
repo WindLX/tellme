@@ -28,14 +28,6 @@ warn() {
 
 msg "开始卸载 tellme..."
 
-# 1. 移除 .zshrc 中的配置
-if [ -f "$ZSHRC_FILE" ]; then
-    msg "正在从 $ZSHRC_FILE 中移除配置..."
-    # 使用 sed 删除相关行，兼容 macOS 和 Linux
-    sed -i.bak -e '/tellme\.zsh/d' -e '/# tellme:/d' "$ZSHRC_FILE"
-    rm -f "${ZSHRC_FILE}.bak"
-fi
-
 # 2. 移除二进制文件
 if [ -f "$TELLME_INSTALL_DIR/tellme" ]; then
     msg "正在移除二进制文件: $TELLME_INSTALL_DIR/tellme"

@@ -63,15 +63,9 @@ main() {
     curl -fsSL "https://raw.githubusercontent.com/$REPO/main/zsh/tellme.zsh" -o "$ZSH_HOOK_FILE" || err "下载 Zsh 钩子脚本失败。"
     
     # 5. 配置 .zshrc
-    msg "配置 .zshrc..."
-    if grep -q "tellme.zsh" "$ZSHRC_FILE"; then
-        msg ".zshrc 已配置，跳过。"
-    else
-        printf "\n# tellme: 捕获上一条命令的输出\n" >> "$ZSHRC_FILE"
-        printf "source \"%s\"\n" "$ZSH_HOOK_FILE" >> "$ZSHRC_FILE"
-        msg "已将 source 命令添加到 $ZSHRC_FILE。"
-        warn "请重启你的终端或运行 'source ~/.zshrc' 来使配置生效。"
-    fi
+    msg "请手动在你的 .zshrc 文件中添加以下内容以启用 tellme："
+    printf "\n# tellme: 捕获上一条命令的输出\nsource \"%s\"\n" "$ZSH_HOOK_FILE"
+    warn "请将上述内容复制到 $ZSHRC_FILE 并重启终端或运行 'source ~/.zshrc' 使配置生效。"
     
     # 6. 检查 PATH
     if ! echo "$PATH" | grep -q "$TELLME_INSTALL_DIR"; then
